@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tester - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">🔍 Regex Tester</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-section">
+                    <label for="regexInput" class="tool-label">Regular Expression</label>
+                    <input type="text" id="regexInput" class="tool-input" placeholder="/pattern/flags">
+                    <div class="tool-info" id="regexInfo"></div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="testText" class="tool-label">Test Text</label>
+                    <textarea 
+                        id="testText" 
+                        class="tool-textarea" 
+                        placeholder="Enter text to test against the regex..."
+                        rows="8"
+                    ></textarea>
+                </div>
+
+                <div class="tool-section">
+                    <div class="tool-header-row">
+                        <label class="tool-label">Matches</label>
+                        <button class="btn-icon" id="copyBtn" title="Copy matches">📋</button>
+                    </div>
+                    <div id="matchesOutput" class="matches-output"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/tool-regex-tester.js"></script>
+</body>
+</html>
+

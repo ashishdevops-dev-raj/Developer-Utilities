@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">🗄️ SQL Formatter</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-section">
+                    <div class="tool-controls">
+                        <button class="btn btn-primary" id="formatBtn">Format</button>
+                        <button class="btn btn-secondary" id="uppercaseBtn">Uppercase Keywords</button>
+                        <button class="btn btn-secondary" id="lowercaseBtn">Lowercase Keywords</button>
+                        <button class="btn btn-secondary" id="clearBtn">Clear</button>
+                        <button class="btn-icon" id="copyBtn" title="Copy to clipboard">📋</button>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="inputText" class="tool-label">SQL Query</label>
+                    <textarea 
+                        id="inputText" 
+                        class="tool-textarea" 
+                        placeholder="Paste your SQL query here..."
+                        rows="12"
+                    ></textarea>
+                    <div class="tool-info" id="inputInfo"></div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="outputText" class="tool-label">Formatted SQL</label>
+                    <textarea 
+                        id="outputText" 
+                        class="tool-textarea" 
+                        placeholder="Formatted SQL will appear here..."
+                        rows="12"
+                    ></textarea>
+                    <div class="tool-info" id="outputInfo"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/tool-sql.js"></script>
+</body>
+</html>
+

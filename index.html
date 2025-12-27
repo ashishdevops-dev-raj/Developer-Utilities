@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy-first developer utility tools - Base64, JSON, XML, SQL, Image Compressor and more">
+    <title>Developer Utilities - Privacy-First Tools</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🛠️ Developer Utilities</h1>
+            <p class="tagline">Privacy-first, client-side developer tools</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="search-container">
+                <input 
+                    type="search" 
+                    id="toolSearch" 
+                    class="search-input" 
+                    placeholder="Search tools..."
+                    aria-label="Search tools"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="tools-grid" id="toolsGrid">
+                <!-- Tools will be dynamically loaded -->
+            </div>
+
+            <div class="no-results" id="noResults" style="display: none;">
+                <p>No tools found matching your search.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>All processing happens in your browser. No data is sent to servers.</p>
+            <button class="feedback-btn" id="feedbackBtn" aria-label="Send feedback">💬 Feedback</button>
+        </div>
+    </footer>
+
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedbackModal" role="dialog" aria-labelledby="feedbackTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="feedbackTitle">Send Feedback</h2>
+                <button class="modal-close" id="closeModal" aria-label="Close feedback form">&times;</button>
+            </div>
+            <form id="feedbackForm" class="modal-body">
+                <div class="form-group">
+                    <label for="feedbackType">Type</label>
+                    <select id="feedbackType" name="type" required>
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="improvement">Improvement</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="feedbackMessage">Message</label>
+                    <textarea 
+                        id="feedbackMessage" 
+                        name="message" 
+                        rows="5" 
+                        required
+                        placeholder="Describe your feedback..."
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="feedbackEmail">Email (optional)</label>
+                    <input 
+                        type="email" 
+                        id="feedbackEmail" 
+                        name="email" 
+                        placeholder="your@email.com"
+                    >
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Send Feedback</button>
+                    <button type="button" class="btn btn-secondary" id="cancelFeedback">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/feedback.js"></script>
+</body>
+</html>
+
+

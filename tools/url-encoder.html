@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Encoder/Decoder - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">🔗 URL Encoder/Decoder</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-section">
+                    <div class="tool-controls">
+                        <button class="btn btn-primary" id="encodeBtn">Encode</button>
+                        <button class="btn btn-secondary" id="decodeBtn">Decode</button>
+                        <button class="btn btn-secondary" id="clearBtn">Clear</button>
+                        <button class="btn-icon" id="copyBtn" title="Copy to clipboard">📋</button>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="inputText" class="tool-label">Input</label>
+                    <textarea 
+                        id="inputText" 
+                        class="tool-textarea" 
+                        placeholder="Enter text to encode or URL-encoded string to decode..."
+                        rows="8"
+                    ></textarea>
+                    <div class="tool-info" id="inputInfo"></div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="outputText" class="tool-label">Output</label>
+                    <textarea 
+                        id="outputText" 
+                        class="tool-textarea" 
+                        placeholder="Result will appear here..."
+                        rows="8"
+                        readonly
+                    ></textarea>
+                    <div class="tool-info" id="outputInfo"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/tool-url-encoder.js"></script>
+</body>
+</html>
+

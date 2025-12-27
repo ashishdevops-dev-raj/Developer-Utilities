@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Diff - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">📊 Text Diff</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="diff-container">
+                    <div class="diff-section">
+                        <label for="text1" class="tool-label">Text 1</label>
+                        <textarea id="text1" class="tool-textarea" rows="10" placeholder="First text..."></textarea>
+                    </div>
+                    <div class="diff-section">
+                        <label for="text2" class="tool-label">Text 2</label>
+                        <textarea id="text2" class="tool-textarea" rows="10" placeholder="Second text..."></textarea>
+                    </div>
+                </div>
+                <div class="tool-section">
+                    <div class="tool-header-row">
+                        <label class="tool-label">Diff Output</label>
+                        <button class="btn-icon" id="copyBtn" title="Copy diff">📋</button>
+                    </div>
+                    <div id="diffOutput" class="diff-output"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/tool-text-diff.js"></script>
+</body>
+</html>
+

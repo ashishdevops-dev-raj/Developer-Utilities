@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delimiter Converter - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">📊 Delimiter Converter</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-section">
+                    <div class="delimiter-controls">
+                        <div class="control-group">
+                            <label for="sourceDelimiter" class="tool-label">Source Delimiter</label>
+                            <select id="sourceDelimiter" class="tool-input">
+                                <option value=",">Comma (,)</option>
+                                <option value="\t">Tab</option>
+                                <option value=";">Semicolon (;)</option>
+                                <option value="|">Pipe (|)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <input type="text" id="sourceCustom" class="tool-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
+                        </div>
+                        <div class="control-group">
+                            <label for="targetDelimiter" class="tool-label">Target Delimiter</label>
+                            <select id="targetDelimiter" class="tool-input">
+                                <option value=",">Comma (,)</option>
+                                <option value="\t">Tab</option>
+                                <option value=";">Semicolon (;)</option>
+                                <option value="|">Pipe (|)</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <input type="text" id="targetCustom" class="tool-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <div class="tool-controls">
+                        <button class="btn btn-primary" id="convertBtn">Convert</button>
+                        <button class="btn btn-secondary" id="swapBtn">Swap Delimiters</button>
+                        <button class="btn btn-secondary" id="clearBtn">Clear</button>
+                        <button class="btn-icon" id="copyBtn" title="Copy to clipboard">📋</button>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="inputText" class="tool-label">Input Data</label>
+                    <textarea 
+                        id="inputText" 
+                        class="tool-textarea" 
+                        placeholder='Example CSV data:
+"Name","Age","City"
+"John Doe",30,"New York, NY"
+"Jane Smith",25,"Los Angeles"
+"Bob &quot;The Builder&quot;",40,"Chicago"'
+                        rows="10"
+                    ></textarea>
+                    <div class="tool-info" id="inputInfo"></div>
+                </div>
+
+                <div class="tool-section">
+                    <div class="tool-header-row">
+                        <label for="outputText" class="tool-label">Converted Output</label>
+                        <span class="tool-info" id="outputInfo"></span>
+                    </div>
+                    <textarea 
+                        id="outputText" 
+                        class="tool-textarea" 
+                        placeholder="Converted data will appear here..."
+                        rows="10"
+                        readonly
+                    ></textarea>
+                </div>
+
+                <div class="tool-section" id="errorSection" style="display: none;">
+                    <div class="error-box" id="errorBox"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/tool-delimiter.js"></script>
+</body>
+</html>
+

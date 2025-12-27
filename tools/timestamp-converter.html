@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timestamp Converter - Developer Utilities</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/tool.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-link">← Back to Tools</a>
+            <h1 class="tool-page-title">⏰ Timestamp Converter</h1>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="tool-container">
+                <div class="tool-section">
+                    <div class="tool-controls">
+                        <button class="btn btn-primary" id="convertBtn">Convert</button>
+                        <button class="btn btn-secondary" id="nowBtn">Now</button>
+                        <button class="btn btn-secondary" id="clearBtn">Clear</button>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <label for="timestampInput" class="tool-label">Unix Timestamp (seconds)</label>
+                    <input type="number" id="timestampInput" class="tool-input" placeholder="Enter timestamp...">
+                </div>
+
+                <div class="tool-section">
+                    <label for="dateInput" class="tool-label">Date & Time</label>
+                    <input type="datetime-local" id="dateInput" class="tool-input">
+                </div>
+
+                <div class="tool-section">
+                    <div class="tool-header-row">
+                        <label class="tool-label">Results</label>
+                        <button class="btn-icon" id="copyBtn" title="Copy results">📋</button>
+                    </div>
+                    <div id="resultsOutput" class="results-output"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/utils.js"></script>
+    <script src="../js/tool-timestamp-converter.js"></script>
+</body>
+</html>
+

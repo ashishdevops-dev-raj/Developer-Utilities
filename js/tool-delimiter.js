@@ -4,36 +4,57 @@
 
     const inputText = document.getElementById('inputText');
     const outputText = document.getElementById('outputText');
-    const sourceDelimiter = document.getElementById('sourceDelimiter');
-    const targetDelimiter = document.getElementById('targetDelimiter');
-    const sourceCustom = document.getElementById('sourceCustom');
-    const targetCustom = document.getElementById('targetCustom');
+    const inputDelimiter = document.getElementById('inputDelimiter');
+    const outputDelimiter = document.getElementById('outputDelimiter');
+    const inputCustom = document.getElementById('inputCustom');
+    const outputCustom = document.getElementById('outputCustom');
     const convertBtn = document.getElementById('convertBtn');
-    const swapBtn = document.getElementById('swapBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const inputInfo = document.getElementById('inputInfo');
-    const outputInfo = document.getElementById('outputInfo');
+    const removeNewlines = document.getElementById('removeNewlines');
+    const removeDuplicates = document.getElementById('removeDuplicates');
+    const interval = document.getElementById('interval');
+    const addQuotes = document.getElementById('addQuotes');
+    const openTag = document.getElementById('openTag');
+    const closeTag = document.getElementById('closeTag');
+    const textBoxHeight = document.getElementById('textBoxHeight');
+    const heightValue = document.getElementById('heightValue');
     const errorSection = document.getElementById('errorSection');
     const errorBox = document.getElementById('errorBox');
 
     function init() {
         convertBtn.addEventListener('click', handleConvert);
-        swapBtn.addEventListener('click', handleSwap);
-        clearBtn.addEventListener('click', handleClear);
-        copyBtn.addEventListener('click', handleCopy);
         
-        sourceDelimiter.addEventListener('change', () => {
-            sourceCustom.style.display = sourceDelimiter.value === 'custom' ? 'block' : 'none';
+        inputDelimiter.addEventListener('change', () => {
+            inputCustom.style.display = inputDelimiter.value === 'custom' ? 'block' : 'none';
         });
         
-        targetDelimiter.addEventListener('change', () => {
-            targetCustom.style.display = targetDelimiter.value === 'custom' ? 'block' : 'none';
+        outputDelimiter.addEventListener('change', () => {
+            outputCustom.style.display = outputDelimiter.value === 'custom' ? 'block' : 'none';
         });
 
         // Auto-convert on input (debounced)
         const debouncedConvert = Utils.debounce(handleConvert, 500);
         inputText.addEventListener('input', debouncedConvert);
+        
+        // Auto-convert on settings change
+        [removeNewlines, removeDuplicates, interval, addQuotes, openTag, closeTag].forEach(element => {
+            if (element) {
+                element.addEventListener('change', handleConvert);
+                element.addEventListener('input', debouncedConvert);
+            }
+        });
+
+        // Text box height slider
+        textBoxHeight.addEventListener('input', (e) => {
+            const height = e.target.value;
+            heightValue.textContent = height + 'px';
+            inputText.style.height = height + 'px';
+            outputText.style.height = height + 'px';
+        });
+
+        // Set initial height
+        const initialHeight = textBoxHeight.value;
+        inputText.style.height = initialHeight + 'px';
+        outputText.style.height = initialHeight + 'px';
     }
 
     function handleConvert() {
@@ -41,229 +62,132 @@
         
         if (!input) {
             outputText.value = '';
-            inputInfo.textContent = '';
-            outputInfo.textContent = '';
             hideError();
             return;
         }
 
         try {
-            const sourceDelim = getDelimiter(sourceDelimiter.value, sourceCustom.value);
-            const targetDelim = getDelimiter(targetDelimiter.value, targetCustom.value);
+            const inputDelim = getDelimiter(inputDelimiter.value, inputCustom.value);
+            const outputDelim = getDelimiter(outputDelimiter.value, outputCustom.value);
 
-            if (!sourceDelim) {
-                throw new Error('Source delimiter cannot be empty');
+            if (!inputDelim && inputDelimiter.value !== '\\n') {
+                throw new Error('Input delimiter cannot be empty');
             }
-            if (!targetDelim) {
-                throw new Error('Target delimiter cannot be empty');
+            if (!outputDelim && outputDelimiter.value !== '\\n') {
+                throw new Error('Output delimiter cannot be empty');
             }
 
             // Parse the input
-            const rows = parseDelimitedText(input, sourceDelim);
+            let items = parseInput(input, inputDelim);
             
-            if (rows.length === 0) {
+            if (items.length === 0) {
                 throw new Error('No data found. Please check your input format.');
             }
 
-            // Convert to target delimiter
-            const output = convertDelimiters(rows, targetDelim);
+            // Apply processing options
+            if (removeDuplicates.checked) {
+                items = removeDuplicateItems(items);
+            }
+
+            // Apply quotes to items
+            items = applyQuotes(items, addQuotes.value, outputDelim);
+
+            // Apply wrap tags to items
+            if (openTag.value.trim() || closeTag.value.trim()) {
+                items = items.map(item => {
+                    const open = openTag.value.trim() || '';
+                    const close = closeTag.value.trim() || '';
+                    return open + item + close;
+                });
+            }
+
+            // Apply interval (insert delimiter every N items)
+            const intervalValue = parseInt(interval.value) || 0;
+            if (intervalValue > 0 && items.length > intervalValue) {
+                items = applyInterval(items, intervalValue);
+            }
+            
+            // Convert to output format
+            let output = convertItems(items, outputDelim);
+            
+            // Remove newlines if requested
+            if (removeNewlines.checked) {
+                output = output.replace(/\r?\n/g, '');
+            }
             
             outputText.value = output;
-            
-            // Update info
-            const rowCount = rows.length;
-            const colCount = rows[0] ? rows[0].length : 0;
-            inputInfo.textContent = `Input: ${rowCount} row${rowCount !== 1 ? 's' : ''}, ${colCount} column${colCount !== 1 ? 's' : ''}`;
-            outputInfo.textContent = `Output: ${rowCount} row${rowCount !== 1 ? 's' : ''}, ${colCount} column${colCount !== 1 ? 's' : ''}`;
-            outputInfo.style.color = 'var(--success)';
-            
             hideError();
-            
-            // Auto-copy to clipboard
-            if (output) {
-                setTimeout(async () => {
-                    await Utils.copyToClipboard(output);
-                    copyBtn.textContent = '✓ Copied';
-                    setTimeout(() => {
-                        copyBtn.textContent = '📋';
-                    }, 2000);
-                }, 300);
-            }
         } catch (error) {
             showError(error.message);
             outputText.value = '';
-            outputInfo.textContent = '';
         }
     }
 
-    function parseDelimitedText(text, delimiter) {
-        const rows = [];
-        const lines = text.split(/\r?\n/);
-        let currentRow = [];
-        let currentField = '';
-        let inQuotes = false;
-
-        for (const line of lines) {
-            if (line.trim() === '' && !inQuotes) {
-                // Empty line - add empty row if we have data, otherwise skip
-                if (currentRow.length > 0 || currentField) {
-                    if (currentField) {
-                        currentRow.push(currentField.trim());
-                        currentField = '';
-                    }
-                    if (currentRow.length > 0) {
-                        rows.push(currentRow);
-                        currentRow = [];
-                    }
-                }
-                continue;
-            }
-
-            for (let j = 0; j < line.length; j++) {
-                const char = line[j];
-                const nextChar = line[j + 1];
-
-                if (char === '"') {
-                    if (inQuotes && nextChar === '"') {
-                        // Escaped quote (double quote)
-                        currentField += '"';
-                        j++; // Skip next quote
-                    } else if (inQuotes && (nextChar === delimiter || nextChar === '\r' || nextChar === '\n' || nextChar === undefined || j === line.length - 1)) {
-                        // End of quoted field
-                        inQuotes = false;
-                    } else if (!inQuotes) {
-                        // Start of quoted field
-                        inQuotes = true;
-                    } else {
-                        // Quote inside quoted field (shouldn't happen, but handle it)
-                        currentField += char;
-                    }
-                } else if (char === delimiter && !inQuotes) {
-                    // Field delimiter found
-                    currentRow.push(currentField.trim());
-                    currentField = '';
-                } else {
-                    currentField += char;
-                }
-            }
-
-            // Check if we're still in quotes (line continuation)
-            if (!inQuotes) {
-                // End of line, add current field
-                currentRow.push(currentField.trim());
-                currentField = '';
-                
-                if (currentRow.length > 0) {
-                    rows.push(currentRow);
-                    currentRow = [];
-                }
-            } else {
-                // Still in quotes, add newline and continue
-                currentField += '\n';
-            }
+    function parseInput(text, delimiter) {
+        if (!delimiter || delimiter === '\\n' || delimiter === '\n') {
+            // Split by newlines
+            return text.split(/\r?\n/).map(item => item.trim()).filter(item => item.length > 0);
+        } else {
+            // Split by delimiter
+            const regex = new RegExp(delimiter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+            return text.split(regex).map(item => item.trim()).filter(item => item.length > 0);
         }
-
-        // Handle remaining field/row
-        if (currentField || currentRow.length > 0) {
-            if (currentField) {
-                currentRow.push(currentField.trim());
-            }
-            if (currentRow.length > 0) {
-                rows.push(currentRow);
-            }
-        }
-
-        // Normalize row lengths (pad with empty strings)
-        if (rows.length > 0) {
-            const maxCols = Math.max(...rows.map(r => r.length));
-            rows.forEach(row => {
-                while (row.length < maxCols) {
-                    row.push('');
-                }
-            });
-        }
-
-        return rows;
     }
 
-    function convertDelimiters(rows, delimiter) {
-        return rows.map(row => {
-            return row.map(field => {
-                // Determine if field needs quoting
-                const needsQuotes = field.includes(delimiter) || 
-                                   field.includes('"') || 
-                                   field.includes('\n') || 
-                                   field.includes('\r') ||
-                                   field.trim() !== field;
-                
-                if (needsQuotes) {
-                    // Escape quotes and wrap in quotes
-                    const escaped = field.replace(/"/g, '""');
-                    return `"${escaped}"`;
-                }
-                return field;
-            }).join(delimiter);
-        }).join('\n');
+    function convertItems(items, delimiter) {
+        if (!delimiter || delimiter === '\\n' || delimiter === '\n') {
+            return items.join('\n');
+        } else {
+            return items.join(delimiter);
+        }
     }
+
+    function removeDuplicateItems(items) {
+        const seen = new Set();
+        return items.filter(item => {
+            if (seen.has(item)) {
+                return false;
+            }
+            seen.add(item);
+            return true;
+        });
+    }
+
+    function applyInterval(items, intervalValue) {
+        // Insert empty string as separator every N items to create visual grouping
+        const result = [];
+        for (let i = 0; i < items.length; i++) {
+            result.push(items[i]);
+            // Insert empty item after every N items (except the last) to create double delimiter
+            if ((i + 1) % intervalValue === 0 && i < items.length - 1) {
+                result.push('');
+            }
+        }
+        return result;
+    }
+
+    function applyQuotes(items, quoteType, delimiter) {
+        if (quoteType === 'none') {
+            return items;
+        }
+        
+        const quoteChar = quoteType === 'single' ? "'" : '"';
+        return items.map(item => quoteChar + item + quoteChar);
+    }
+
 
     function getDelimiter(selected, custom) {
         if (selected === 'custom') {
             return custom || '';
         }
-        // Handle special characters - check for tab in various formats
+        // Handle special characters
         if (selected === '\\t' || selected === '\t' || selected === 'tab') {
             return '\t';
         }
+        if (selected === '\\n' || selected === '\n') {
+            return '\n';
+        }
         return selected;
-    }
-
-    function handleSwap() {
-        const sourceValue = sourceDelimiter.value;
-        const targetValue = targetDelimiter.value;
-        const sourceCustomValue = sourceCustom.value;
-        const targetCustomValue = targetCustom.value;
-
-        // Swap select values
-        sourceDelimiter.value = targetValue;
-        targetDelimiter.value = sourceValue;
-
-        // Swap custom inputs
-        sourceCustom.value = targetCustomValue;
-        targetCustom.value = sourceCustomValue;
-
-        // Update visibility
-        sourceCustom.style.display = sourceDelimiter.value === 'custom' ? 'block' : 'none';
-        targetCustom.style.display = targetDelimiter.value === 'custom' ? 'block' : 'none';
-
-        // Re-convert if there's input
-        if (inputText.value.trim()) {
-            handleConvert();
-        }
-    }
-
-    function handleClear() {
-        inputText.value = '';
-        outputText.value = '';
-        inputInfo.textContent = '';
-        outputInfo.textContent = '';
-        hideError();
-        inputText.focus();
-    }
-
-    async function handleCopy() {
-        const text = outputText.value;
-        if (!text) {
-            Utils.showError('No output to copy');
-            return;
-        }
-
-        const success = await Utils.copyToClipboard(text);
-        if (success) {
-            copyBtn.textContent = '✓ Copied';
-            setTimeout(() => {
-                copyBtn.textContent = '📋';
-            }, 2000);
-        }
     }
 
     function showError(message) {
@@ -289,4 +213,3 @@
         init();
     }
 })();
-

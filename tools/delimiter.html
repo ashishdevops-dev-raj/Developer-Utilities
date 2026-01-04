@@ -18,74 +18,116 @@
 
     <main class="main">
         <div class="container">
-            <div class="tool-container">
-                <div class="tool-section">
-                    <div class="delimiter-controls">
-                        <div class="control-group">
-                            <label for="sourceDelimiter" class="tool-label">Source Delimiter</label>
-                            <select id="sourceDelimiter" class="tool-input">
-                                <option value=",">Comma (,)</option>
-                                <option value="\t">Tab</option>
-                                <option value=";">Semicolon (;)</option>
-                                <option value="|">Pipe (|)</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                            <input type="text" id="sourceCustom" class="tool-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
-                        </div>
-                        <div class="control-group">
-                            <label for="targetDelimiter" class="tool-label">Target Delimiter</label>
-                            <select id="targetDelimiter" class="tool-input">
-                                <option value=",">Comma (,)</option>
-                                <option value="\t">Tab</option>
-                                <option value=";">Semicolon (;)</option>
-                                <option value="|">Pipe (|)</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                            <input type="text" id="targetCustom" class="tool-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
-                        </div>
+            <div class="delimiter-layout">
+                <!-- Left Side: Input and Output -->
+                <div class="delimiter-main-content">
+                    <div class="tool-section">
+                        <label for="inputText" class="tool-label">Input Data</label>
+                        <textarea 
+                            id="inputText" 
+                            class="tool-textarea delimiter-textarea" 
+                            placeholder="Enter your data here... Each line or delimiter-separated value will be processed."
+                        ></textarea>
                     </div>
-                </div>
 
-                <div class="tool-section">
-                    <div class="tool-controls">
-                        <button class="btn btn-primary" id="convertBtn">Convert</button>
-                        <button class="btn btn-secondary" id="swapBtn">Swap Delimiters</button>
-                        <button class="btn btn-secondary" id="clearBtn">Clear</button>
-                        <button class="btn-icon" id="copyBtn" title="Copy to clipboard">📋</button>
+                    <div class="delimiter-action-section">
+                        <button class="btn btn-primary convert-btn" id="convertBtn">
+                            <span class="convert-icon">⇄</span>
+                            Convert
+                        </button>
                     </div>
-                </div>
 
-                <div class="tool-section">
-                    <label for="inputText" class="tool-label">Input Data</label>
-                    <textarea 
-                        id="inputText" 
-                        class="tool-textarea" 
-                        placeholder='Example CSV data:
-"Name","Age","City"
-"John Doe",30,"New York, NY"
-"Jane Smith",25,"Los Angeles"
-"Bob &quot;The Builder&quot;",40,"Chicago"'
-                        rows="10"
-                    ></textarea>
-                    <div class="tool-info" id="inputInfo"></div>
-                </div>
-
-                <div class="tool-section">
-                    <div class="tool-header-row">
+                    <div class="tool-section">
                         <label for="outputText" class="tool-label">Converted Output</label>
-                        <span class="tool-info" id="outputInfo"></span>
+                        <textarea 
+                            id="outputText" 
+                            class="tool-textarea delimiter-textarea" 
+                            placeholder="Converted data will appear here..."
+                            readonly
+                        ></textarea>
                     </div>
-                    <textarea 
-                        id="outputText" 
-                        class="tool-textarea" 
-                        placeholder="Converted data will appear here..."
-                        rows="10"
-                        readonly
-                    ></textarea>
+
+                    <div class="tool-section" id="errorSection" style="display: none;">
+                        <div class="error-box" id="errorBox"></div>
+                    </div>
                 </div>
 
-                <div class="tool-section" id="errorSection" style="display: none;">
-                    <div class="error-box" id="errorBox"></div>
+                <!-- Right Side: Converter Settings -->
+                <div class="delimiter-settings-panel">
+                    <h2 class="settings-title">Converter Settings</h2>
+                    
+                    <div class="settings-group">
+                        <label for="inputDelimiter" class="tool-label">Input Delimiter</label>
+                        <select id="inputDelimiter" class="tool-input settings-select">
+                            <option value="\n">New Line</option>
+                            <option value=",">Comma (,)</option>
+                            <option value="\t">Tab</option>
+                            <option value=";">Semicolon (;)</option>
+                            <option value="|">Pipe (|)</option>
+                            <option value=" ">Space</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="text" id="inputCustom" class="tool-input settings-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="outputDelimiter" class="tool-label">Output Delimiter</label>
+                        <select id="outputDelimiter" class="tool-input settings-select">
+                            <option value="," selected>Comma (,)</option>
+                            <option value="\n">New Line</option>
+                            <option value="\t">Tab</option>
+                            <option value=";">Semicolon (;)</option>
+                            <option value="|">Pipe (|)</option>
+                            <option value=" ">Space</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="text" id="outputCustom" class="tool-input settings-input" placeholder="Enter custom delimiter" style="display: none; margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="removeNewlines" checked>
+                            <span>Remove newlines from output</span>
+                        </label>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="removeDuplicates">
+                            <span>Remove duplicates</span>
+                        </label>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="interval" class="tool-label">Interval</label>
+                        <input type="number" id="interval" class="tool-input settings-input" value="0" min="0">
+                        <span class="settings-hint">(0 = disabled)</span>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="addQuotes" class="tool-label">Add Quotes</label>
+                        <select id="addQuotes" class="tool-input settings-select">
+                            <option value="none" selected>No Quotes</option>
+                            <option value="single">Single Quotes</option>
+                            <option value="double">Double Quotes</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="tool-label">Wrap Tags</label>
+                        <div class="wrap-tags-group">
+                            <input type="text" id="openTag" class="tool-input settings-input" placeholder="Open tag (e.g., &lt;li&gt;)">
+                            <input type="text" id="closeTag" class="tool-input settings-input" placeholder="Close tag (e.g., &lt;/li&gt;)">
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="textBoxHeight" class="tool-label">Text Box Height</label>
+                        <div class="slider-container">
+                            <input type="range" id="textBoxHeight" class="slider" min="200" max="800" value="500" step="50">
+                            <span class="slider-value" id="heightValue">500px</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,4 +137,3 @@
     <script src="../js/tool-delimiter.js"></script>
 </body>
 </html>
-
